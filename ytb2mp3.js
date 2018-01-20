@@ -19,30 +19,32 @@ const ytb2mp3 = (inputVideo, outputFile) => {
       .format('mp3')
       .audioBitrate(320)
       .pipe(
-        fs.createWriteStream(`./output/${outputFile}`).on('finish', eve => {
+        fs.createWriteStream(`./output/${outputFile}.mp3`).on('finish', eve => {
           resolve(true);
         })
       );
   });
 };
 const convert = async videos => {
-  for (let video of videos) {
+  for (let videoURL of videos) {
     try {
-      await ytb2mp3(video.inputVideo, video.outputFile);
-      console.log(`- ${video.outputFile} Done!`);
+      const videoInfo = await ytdl.getInfo(videoURL);
+      console.log(` Starting to download ${videoInfo.title} ..\n`);
+      await ytb2mp3(videoURL, videoInfo.title);
+      console.log(`- ${videoInfo.title} Done!`);
     } catch (error) {
       console.log(error);
     }
   }
 };
 const videos = [
-  {
-    inputVideo: 'https://www.youtube.com/watch?v=7M-jsjLB20Y',
-    outputFile: 'vid12.mp3'
-  },
-  {
-    inputVideo: 'https://www.youtube.com/watch?v=7M-jsjLB20Y',
-    outputFile: 'vid23.mp3'
-  }
+  '7M-jsjLB20Y',
+  '3XmrZaVVUpc',
+  'ZHpyi6oDmZM',
+  '6u32X7r4WkE',
+  'GU1hmTA71Zg',
+  'J2GXBLVZk60',
+  'o7vLjAVcddg'
+  
 ];
 convert(videos);
